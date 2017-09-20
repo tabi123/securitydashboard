@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 
 from models import *
 from models_tweet import tweets as Tweets
-from models_profiles import profiles
+from models_profiles import profiles, keyword_tags
 
 # db.drop_all()
 from tweeter import getNegativeTweets, get_cve, get_cvss_rating, get_tweet_score, twitter_user_exist
@@ -191,8 +191,8 @@ def show_profiles():
 		saved_profiles = db.session.query(profiles).all()
 		profile_name_invalid = session["profile_name_invalid"] if "profile_name_invalid" in session else False
 		return render_template('profiles.html', profiles=saved_profiles, profile_name_invalid=profile_name_invalid)
+	
 	if request.method == 'POST':
-
 		request_data = request.data or request.form
 		profile_name = request_data.get('profile_name')
 		session["profile_name_invalid"] = True
@@ -202,6 +202,80 @@ def show_profiles():
 			db.session.add(profile)
 			db.session.commit()
 		return redirect(url_for('show_profiles'))
+
+
+@app.route('/keywords', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@ssl_required
+@login_required
+def show_keywords():
+	if request.method == 'GET':
+		saved_keywords = db.session.query(keyword_tags).all()
+		listt = []
+		for each_keyword in saved_keywords:
+			listt.append(each_keyword.tag_name)
+		print (listt,"check this")
+		return render_template('keywords.html', keywords=saved_keywords)
+	
+	if request.method == 'POST':
+		request_data = request.data or request.form
+		keyword_name = request_data.get('keyword_name')
+		keyword = keyword_tags(tag_name=keyword_name, critical_keyword='', high_keyword='')
+		db.session.add(keyword)
+		db.session.commit()
+		return redirect(url_for('show_keywords'))
+
+	if request.method == 'DELETE':
+		request_data = request.data or request.form
+		tag_name = request_data.get('tag_name')
+		keyword = db.session.query(keyword_tags).filter_by(tag_name=tag_name).first()
+		if keyword:
+			db.session.delete(keyword)
+			db.session.commit()
+
+			return jsonify({ 'message': 'keyword deleted successfully'}), 204
+		
+		return jsonify({ 'message': 'keyword deletion was not successful'}), 400
+		
+	if request.method == 'PUT':
+		request_data = request.data or request.form
+		tag_name = request_data.get('tag_name')
+		to_update_tag_text = request_data.get('to_update_tag_text')
+		if to_update_tag_text and tag_name:
+			keyword = db.session.query(keyword_tags).filter_by(tag_name=tag_name).first()
+			if keyword and keyword.tag_name != to_update_tag_text:
+				keyword.tag_name = to_update_tag_text
+				db.session.commit()
+
+			return jsonify({ 'message': 'keyword updated successfully'}), 200
+			
+		return jsonify({ 'message': 'keyword update was not successful'}), 400
+
+
+# @app.route('/keywordsedit', methods=['PUT', 'DELETE'])
+# def manage_keyword(tag_name):
+# 	if request.method == 'DELETE':
+# 		keyword = db.session.query(keyword_tags).filter_by(tag_name=tag_name).first()
+# 		if keyword:
+# 			db.session.delete(keyword)
+# 			db.session.commit()
+
+# 			return jsonify({ 'message': 'keyword deleted successfully'}), 204
+		
+# 		return jsonify({ 'message': 'keyword deletion was not successful'}), 400
+		
+# 	if request.method == 'PUT':
+# 		request_data = request.data or request.form
+# 		to_update_tag_text = request_data.get('to_update_tag_text')
+# 		if to_update_tag_text:
+# 			keyword = db.session.query(keyword_tags).filter_by(tag_name=tag_name).first()
+# 			if keyword and keyword.tag_name != to_update_tag_text:
+# 				keyword.tag_name = to_update_tag_text
+# 				db.session.commit()
+
+# 			return jsonify({ 'message': 'keyword updated successfully'}), 200
+			
+# 		return jsonify({ 'message': 'keyword update was not successful'}), 400
+
 
 @app.route('/profiles/<int:profile_id>', methods=['PUT', 'DELETE'])
 def manage_profile(profile_id):
@@ -234,7 +308,6 @@ def manage_profile(profile_id):
 @app.route('/logout')
 @ssl_required
 @login_required
-
 def logout():
 	session['logged_in'] = False
 	return redirect(url_for('show_all'))
