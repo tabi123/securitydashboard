@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Security Dashboard</title>
+    <title>Social Dashboard</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.5 -->
@@ -77,13 +77,17 @@
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
             <a class="navbar-brand">Blogs and Forums</a>
+            
             <div class="navbar-custom-menu">
               <ul class="nav navbar-nav pull-right">
-                <li class="active"><a href="./">Blogs and Forums</a></li>
+                <li class="active"><a href="#">Blogs and Forums</a></li>
                 <li class="dropdown-toggle dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="{{ url_for('show_all_tweets') }}">Social Networks</a>
                             <ul class="dropdown-menu">
+
                   
-                  <li><a href="{{ url_for('show_profiles') }}">Profiles</a></li>    
+                  <li><a href="{{ url_for('show_profiles') }}">Profiles</a></li>   
+                                    <li><a href="{{ url_for('show_keywords') }}">Keywords</a></li>    
+ 
 </ul>
                 </li>
 
