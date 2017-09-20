@@ -180,7 +180,6 @@ def show_all_tweets(profile_name=''):
 		print (saved_tweets, "saved_tweets", profile.id)
 	else:
 		saved_tweets = []
-	print (saved_tweets[0].__dict__, "dekho")
 	return render_template('show_all_tweets.html', tweets=saved_tweets, profile=profile, profiles=saved_profiles)
 	
 @app.route('/profiles', methods=['GET', 'POST'])
@@ -301,9 +300,6 @@ def manage_profile(profile_id):
 			return jsonify({ 'message': 'profile updated successfully'}), 200
 			
 		return jsonify({ 'message': 'profile update was not successful'}), 400
-
-
-
 
 @app.route('/logout')
 @ssl_required

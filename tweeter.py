@@ -458,7 +458,7 @@ def get_tweet_score(text, score):
 				elif float(score) <= -0.05 or float(score) >= -0.1:
 						tweet_score = str(score) + " [high] "
 
-		return tweet_score
+		return tweet_score.replace('SS', '')
 
 
 def twitter_user_exist(profile_name):
