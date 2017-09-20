@@ -191,8 +191,8 @@ def show_profiles():
 		saved_profiles = db.session.query(profiles).all()
 		profile_name_invalid = session["profile_name_invalid"] if "profile_name_invalid" in session else False
 		return render_template('profiles.html', profiles=saved_profiles, profile_name_invalid=profile_name_invalid)
-	
 	if request.method == 'POST':
+
 		request_data = request.data or request.form
 		profile_name = request_data.get('profile_name')
 		session["profile_name_invalid"] = True
