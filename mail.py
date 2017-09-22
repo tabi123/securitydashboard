@@ -90,7 +90,7 @@ def mail():
 	if mail_text != []:
 
 		fromaddr = "socialdashboard2017@gmail.com"
-		toaddr = "raheela.memon11@gmail.com"
+		toaddr = "socialdashboard@tutanota.com"
 		msg = MIMEMultipart()
 		msg['From'] = fromaddr
 		msg['To'] = toaddr
